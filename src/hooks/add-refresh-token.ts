@@ -15,30 +15,31 @@ export default (options = {}): Hook => {
     const { user } = result;
 
     if (!config) throw new Error("Refresh Token configuration is missing");
-    ["service", "entity"].forEach(prop => {
+    ["service", "entity", "clientIdField"].forEach(prop => {
       if (prop in config) return;
-      throw new Error("'Service' or 'Entity' is missing from configuration");
+      throw new Error(`Prop '${prop}' is missing from configuration`);
     });
 
-    const rfservice = app.service(config.service);
-    const existingToken = await rfservice.find({
+    const { entity, clientIdField } = config;
+    const entityService = app.service(config.service);
+    const existingToken = await entityService.find({
       query: {
-        clientId: typeof user.id === "number" ? `${user.id}` : user.id
+        [clientIdField]: typeof user.id === "number" ? `${user.id}` : user.id
       }
     });
 
     if (existingToken.total > 0) {
-      const { refreshToken } = existingToken.data[0];
-      Object.assign(result, { refreshToken });
+      const data = existingToken.data[0];
+      Object.assign(result, { [entity]: data[entity] });
       return context;
     }
 
-    const token = await rfservice.create({
-      refreshToken: UUIDV4(),
-      clientId: user.id
+    const token = await entityService.create({
+      [entity]: UUIDV4(),
+      [clientIdField]: user.id
     });
 
-    Object.assign(result, { refreshToken: token.refreshToken });
+    Object.assign(result, { [entity]: token[entity] });
 
     return context;
   };

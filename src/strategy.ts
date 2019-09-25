@@ -5,16 +5,10 @@ import {
   AuthenticationResult
 } from "@feathersjs/authentication";
 
-interface RefreshTokenData {
-  id?: any;
-  refreshToken: String;
-  clientId: String;
-}
-
 export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
   verifyConfiguration() {
     const config = this.configuration;
-    ["entity", "service"].forEach(p => {
+    ["entity", "service", "clientIdField"].forEach(p => {
       if (typeof config[p] !== "string") {
         throw new Error(
           `'${this.name}' authentication strategy requires a '${p}' setting`
@@ -22,7 +16,6 @@ export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
       }
     });
   }
-
   get configuration() {
     const authConfig = this.authentication!.configuration;
     const config = super.configuration || {};
@@ -39,12 +32,13 @@ export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
     };
   }
 
-  async findEntity(data: RefreshTokenData, params: Params) {
+  async findEntity(data: any, params: Params) {
     const { entityService } = this;
+    const { entity, clientIdField } = this.configuration;
     const query = this.getEntityQuery(
       {
-        refreshToken: data.refreshToken,
-        clientId: data.clientId
+        [entity]: data[entity],
+        [clientIdField]: data[clientIdField]
       },
       params
     );
@@ -59,21 +53,24 @@ export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
     authenticationRequest: AuthenticationResult,
     params: Params
   ) {
-    ["refreshToken", "clientId"].forEach(p => {
+    const { entity, clientId: clientIdField } = this.configuration;
+
+    [entity, clientIdField].forEach(p => {
       if (p in authenticationRequest) return;
       throw new BadRequest(`${p} is missing from request`);
     });
 
-    const { refreshToken, clientId } = authenticationRequest;
-
-    const token: RefreshTokenData = await this.findEntity(
-      { refreshToken, clientId },
+    const token = await this.findEntity(
+      {
+        [entity]: authenticationRequest[entity],
+        [clientIdField]: authenticationRequest[clientIdField]
+      },
       params
     );
 
     const accessToken = await this.app!.service(
       "authentication"
-    ).createAccessToken({ sub: token.clientId });
+    ).createAccessToken({ sub: token[clientIdField] });
 
     return { accessToken };
   }
