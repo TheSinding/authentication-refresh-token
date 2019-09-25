@@ -27,6 +27,7 @@
   },
   "scripts": {
     "prepublish": "npm run compile",
+    "publish": "npm run prepublish && npm publish",
     "compile": "shx rm -rf lib/ && tsc",
     "test": "npm run compile && npm run mocha",
     "mocha": "mocha --opts ../../mocha.ts.opts --recursive test/**.test.ts test/**/*.test.ts"
