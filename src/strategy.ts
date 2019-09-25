@@ -72,6 +72,10 @@ export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
       "authentication"
     ).createAccessToken({ sub: token[clientIdField] });
 
-    return { accessToken };
+    return {
+      authentication: { strategy: this.name },
+      accessToken,
+      [entity]: token[entity]
+    };
   }
 }
