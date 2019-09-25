@@ -54,7 +54,7 @@ Use what every database adapter you want, depending on your setup.
 
 Now it all need to be added in the configuration:
 
-```json
+```jsonc
 {
   "host": "localhost",
   "port": 3030,
@@ -92,7 +92,7 @@ curl -H "Content-Type: application/json" -X POST -d '{ "strategy": "local", "ema
 
 The response should look something like this:
 
-```json
+```jsonc
 {
     "authentication": {
         "strategy": "local"
@@ -111,7 +111,7 @@ curl -H "Content-Type: application/json" -X POST -d '{ "strategy": "refresh-toke
 
 It's respond should look similar to this, if the `refreshToken` and the `clientId` matches:
 
-```json
+```jsonc
 {
   "authentication": {
     "strategy": "refresh-token"
