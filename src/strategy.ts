@@ -21,7 +21,8 @@ export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
     const config = super.configuration || {};
     return {
       errorMessage: "Invalid login",
-      ...config
+      ...config,
+      authConfig
     };
   }
 
@@ -49,7 +50,7 @@ export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
     return result.data[0];
   }
   async getAuthEntity(id: any, params: Params) {
-    const { entity, service } = this.configuration.authConfig;
+    const { service } = this.configuration.authConfig;
     const entityService = this.app!.service(service);
 
     try {
