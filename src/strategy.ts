@@ -25,7 +25,7 @@ export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
     };
   }
 
-  async getEntityQuery(query: Query, _params: Params) {
+  getEntityQuery(query: Query, _params: Params) {
     return {
       $limit: 1,
       ...query
