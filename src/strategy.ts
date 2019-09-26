@@ -48,17 +48,36 @@ export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
     }
     return result.data[0];
   }
+  async getAuthEntity(id: any, params: Params) {
+    const { entity, service } = this.configuration.authConfig;
+    const entityService = this.app!.service(service);
+
+    try {
+      return await entityService.get(id, params);
+    } catch (e) {
+      throw new NotAuthenticated();
+    }
+  }
 
   async authenticate(
     authenticationRequest: AuthenticationResult,
     params: Params
   ) {
-    const { entity, clientIdField } = this.configuration;
-
+    const { entity, clientIdField, authConfig } = this.configuration;
+    const response = {};
     [entity, clientIdField].forEach(p => {
       if (p in authenticationRequest) return;
       throw new BadRequest(`${p} is missing from request`);
     });
+
+    if (authConfig && ["entity", "service"].every(p => p in authConfig)) {
+      Object.assign(response, {
+        [authConfig.entity]: await this.getAuthEntity(
+          authenticationRequest[clientIdField],
+          params
+        )
+      });
+    }
 
     const token = await this.findEntity(
       {
@@ -72,10 +91,10 @@ export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
       "authentication"
     ).createAccessToken({ sub: token[clientIdField] });
 
-    return {
+    return Object.assign({}, response, {
       authentication: { strategy: this.name },
       accessToken,
       [entity]: token[entity]
-    };
+    });
   }
 }
