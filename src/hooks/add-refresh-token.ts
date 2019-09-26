@@ -8,7 +8,11 @@ export default (options = {}): Hook => {
     const { data, app, result, service } = context;
 
     const { strategy } = data;
-    if (strategy !== "local" || strategy === "refresh-token") return context;
+    if (
+      (strategy !== "local" && strategy !== "jwt") ||
+      strategy === "refresh-token"
+    )
+      return context;
 
     const { "refresh-token": config } = app.get("authentication");
     if (!("user" in result)) return context;
