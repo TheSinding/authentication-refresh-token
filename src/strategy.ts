@@ -53,7 +53,7 @@ export class RefreshTokenStrategy extends AuthenticationBaseStrategy {
     authenticationRequest: AuthenticationResult,
     params: Params
   ) {
-    const { entity, clientId: clientIdField } = this.configuration;
+    const { entity, clientIdField } = this.configuration;
 
     [entity, clientIdField].forEach(p => {
       if (p in authenticationRequest) return;
