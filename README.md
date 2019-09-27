@@ -2,9 +2,11 @@
 
 This strategy adds refresh tokens to feathersjs authentication.
 
+### This is still new, so use with caution.
+
 ## Requirements
 
-Currently it only supports when it's used in conjunction with the "Local Strategy" aswell.
+Currently it only supports when it's used in conjunction with "Local Strategy" and "JWT"
 
 ## What it does
 
@@ -120,7 +122,6 @@ It's respond should look similar to this, if the `refreshToken` and the `clientI
 }
 ```
 
-## This is still new, so use with caution.
 
 ## Changelog:
 
