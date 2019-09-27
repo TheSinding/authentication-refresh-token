@@ -118,7 +118,8 @@ It's respond should look similar to this, if the `refreshToken` and the `clientI
   "authentication": {
     "strategy": "refresh-token"
   },
-  "accessToken": "TOKEN DATA" // The refreshed access token
+  "accessToken": "TOKEN DATA", // The refreshed access token
+  "user": { // User data }
 }
 ```
 
