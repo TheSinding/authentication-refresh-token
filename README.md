@@ -2,7 +2,7 @@
 
 This strategy adds refresh tokens to feathersjs authentication.
 
-### This is still new, so use with caution.
+### [UNMAINTAINED] - Please note, I'm not maintaining this as I don't use FeathersJS in my daily work anymore. Now, it still might work, but there are no guarantees 
 
 ## Requirements
 
